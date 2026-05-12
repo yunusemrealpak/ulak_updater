@@ -1,3 +1,9 @@
+## 0.1.1
+
+- Add dartdoc comments to all public APIs (`UlakUpdater`, `UlakUpdaterConfig`, `UlakUpdaterCopy`, `UpdateGate`, `ReleaseInfo`, `UpdateState` and subclasses, `UpdateFailure` and subclasses).
+- Replace deprecated `ThemeData.dialogBackgroundColor` with `dialogTheme.backgroundColor` in bundled dialogs.
+- Add missing trailing commas across the package.
+
 ## 0.1.0
 
 - Initial release.
