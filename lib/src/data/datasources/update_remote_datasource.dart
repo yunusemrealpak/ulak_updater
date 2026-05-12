@@ -3,13 +3,18 @@ import 'package:dio/dio.dart';
 import '../models/release_info_model.dart';
 
 class UpdateRemoteDataSource {
-  UpdateRemoteDataSource({required this.dio});
+  UpdateRemoteDataSource({required this.dio, required this.project});
+
   final Dio dio;
+  final String project;
 
   Future<ReleaseInfoModel> getCurrentRelease(String channel) async {
     final res = await dio.get<Map<String, dynamic>>(
       '/v1/version',
-      queryParameters: {'channel': channel},
+      queryParameters: {
+        'project': project,
+        'channel': channel,
+      },
     );
     return ReleaseInfoModel.fromJson(res.data!);
   }
@@ -42,6 +47,7 @@ class UpdateRemoteDataSource {
       '/v1/checkin',
       data: {
         'uuid': uuid,
+        'project': project,
         'versionCode': versionCode,
         'versionName': versionName,
       },

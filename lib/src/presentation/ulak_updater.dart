@@ -93,7 +93,7 @@ class UlakUpdater {
       validateStatus: (s) => s != null && s >= 200 && s < 300,
     ),);
 
-    final remote = UpdateRemoteDataSource(dio: dio);
+    final remote = UpdateRemoteDataSource(dio: dio, project: config.project);
     final local = UpdateLocalDataSource(box: box);
     const installer = AndroidInstaller();
     const verifier = Sha256Verifier();

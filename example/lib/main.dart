@@ -10,6 +10,10 @@ Future<void> main() async {
         'ULAK_BASE_URL',
         defaultValue: 'https://ulak.tepvox.com',
       ),
+      project: String.fromEnvironment(
+        'ULAK_PROJECT',
+        defaultValue: 'saha',
+      ),
     ),
   );
 

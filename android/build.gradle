@@ -1,5 +1,5 @@
 group 'com.tepvox.ulak_updater'
-version '0.1.1'
+version '0.2.0'
 
 buildscript {
     ext.kotlin_version = '1.9.0'

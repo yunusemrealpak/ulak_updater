@@ -2,26 +2,37 @@ import 'package:equatable/equatable.dart';
 
 /// Configuration for the updater.
 ///
-/// Constructed by the host app and passed to `UlakUpdater.init`. All fields
-/// other than [baseUrl] have sensible defaults. The most common reason to
-/// override defaults is to localize [copy] or to change the [channel] when
-/// you ship `beta` builds alongside `stable`.
+/// Constructed by the host app and passed to `UlakUpdater.init`. Only
+/// [baseUrl] and [project] are required; everything else has sensible
+/// defaults. Override [copy] to localize, change [channel] to ship `beta`
+/// alongside `stable`, etc.
 class UlakUpdaterConfig extends Equatable {
-  /// Creates a configuration. Only [baseUrl] is required.
+  /// Creates a configuration. [baseUrl] and [project] are required.
   const UlakUpdaterConfig({
     required this.baseUrl,
+    required this.project,
     this.channel = 'stable',
     this.checkOnStartup = true,
     this.checkTimeout = const Duration(seconds: 8),
     this.downloadTimeout = const Duration(minutes: 10),
     this.copy = const UlakUpdaterCopy(),
-  });
+  })  : assert(baseUrl != '', 'baseUrl must not be empty'),
+        assert(project != '', 'project slug must not be empty');
 
   /// Public base URL of the ulak server, e.g. `https://updates.example.com`.
   ///
-  /// No trailing slash. The package appends `/v1/version`, `/v1/checkin`
-  /// and the APK download URL itself comes from the server response.
+  /// No trailing slash. The package appends `/v1/version` and `/v1/checkin`;
+  /// the APK download URL itself comes from the server response.
   final String baseUrl;
+
+  /// Project slug this app belongs to (server-side identifier). Required
+  /// since v0.2.0 — the server uses this to look up which release stream
+  /// the device should follow.
+  ///
+  /// Server is multi-tenant: every Android `applicationId` corresponds to
+  /// exactly one project. If you publish two apps from the same Ulak server,
+  /// each must have its own slug.
+  final String project;
 
   /// Release channel to follow. The server matches releases against this
   /// string (e.g. `stable`, `beta`). Defaults to `stable`.
@@ -48,7 +59,7 @@ class UlakUpdaterConfig extends Equatable {
 
   @override
   List<Object?> get props =>
-      [baseUrl, channel, checkOnStartup, checkTimeout, downloadTimeout, copy];
+      [baseUrl, project, channel, checkOnStartup, checkTimeout, downloadTimeout, copy];
 }
 
 /// Externalized strings shown by the bundled widgets.
