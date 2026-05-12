@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  FileProvider paths used by ulak_updater. The plugin writes downloaded APKs
+  to the app's external-cache-dir; PackageInstaller intent then reads back
+  via these provider paths.
+
+  Hosts must reference this file from their own FileProvider declaration:
+
+    <provider
+        android:name="androidx.core.content.FileProvider"
+        android:authorities="${applicationId}.ulakprovider"
+        android:exported="false"
+        android:grantUriPermissions="true">
+        <meta-data
+            android:name="android.support.FILE_PROVIDER_PATHS"
+            android:resource="@xml/ulak_file_paths" />
+    </provider>
+-->
+<paths>
+    <external-cache-path name="ulak_external_cache" path="."/>
+    <cache-path          name="ulak_app_cache"      path="."/>
+</paths>

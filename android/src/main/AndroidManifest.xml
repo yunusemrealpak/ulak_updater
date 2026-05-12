@@ -1,0 +1,7 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--
+      Permissions are NOT declared here on purpose: hosts must add
+      REQUEST_INSTALL_PACKAGES and the FileProvider entry in their own
+      AndroidManifest.xml. See the package README for the snippet.
+    -->
+</manifest>
