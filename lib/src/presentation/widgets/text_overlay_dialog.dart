@@ -14,7 +14,7 @@ class TextOverlayDialog extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
             decoration: BoxDecoration(
-              color: theme.dialogBackgroundColor,
+              color: theme.dialogTheme.backgroundColor ?? theme.colorScheme.surface,
               borderRadius: BorderRadius.circular(14),
             ),
             child: Row(

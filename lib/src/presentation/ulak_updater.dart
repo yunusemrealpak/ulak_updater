@@ -17,24 +17,42 @@ import 'ulak_updater_config.dart';
 
 /// Top-level entry point for the package.
 ///
-///     await UlakUpdater.init(config: UlakUpdaterConfig(baseUrl: '...'));
-///     runApp(MyApp());
+/// `UlakUpdater` owns a single state machine ([UpdateCubit]) and the
+/// [UlakUpdaterConfig] you provide. Call [init] once during app startup
+/// before `runApp`, then wrap your home widget with `UpdateGate`.
 ///
-/// After init, [UpdateGate] reads the singleton [cubit] and [config].
+/// ```dart
+/// await UlakUpdater.init(
+///   config: const UlakUpdaterConfig(baseUrl: 'https://updates.example.com'),
+/// );
+/// runApp(const MyApp());
+/// ```
+///
+/// Accessing [config] or [cubit] before [init] throws [StateError].
 class UlakUpdater {
   UlakUpdater._();
+
   static final UlakUpdater _instance = UlakUpdater._();
+
+  /// The singleton instance. Use [init] before reading [config] or [cubit].
   static UlakUpdater get instance => _instance;
 
   late UlakUpdaterConfig _config;
   late UpdateCubit _cubit;
   bool _initialized = false;
 
+  /// The configuration passed to [init].
+  ///
+  /// Throws [StateError] if [init] has not yet been called.
   UlakUpdaterConfig get config {
     _ensureInit();
     return _config;
   }
 
+  /// The state machine driving the update flow. Exposed for advanced apps
+  /// that want to build a custom UI instead of using `UpdateGate`.
+  ///
+  /// Throws [StateError] if [init] has not yet been called.
   UpdateCubit get cubit {
     _ensureInit();
     return _cubit;
@@ -46,6 +64,16 @@ class UlakUpdater {
     }
   }
 
+  /// Initializes the singleton with the given [config].
+  ///
+  /// This wires up Hive (local storage for the device UUID and last
+  /// successful check), the Dio HTTP client, the data sources, the
+  /// repository, the use cases, and the [UpdateCubit]. After this call
+  /// returns, [instance] is ready to use.
+  ///
+  /// `init` is idempotent — calling it more than once is a no-op.
+  /// Must be invoked **after** `WidgetsFlutterBinding.ensureInitialized()`
+  /// and **before** `runApp`.
   static Future<void> init({required UlakUpdaterConfig config}) async {
     final i = _instance;
     if (i._initialized) {
@@ -63,7 +91,7 @@ class UlakUpdater {
       receiveTimeout: config.checkTimeout,
       responseType: ResponseType.json,
       validateStatus: (s) => s != null && s >= 200 && s < 300,
-    ));
+    ),);
 
     final remote = UpdateRemoteDataSource(dio: dio);
     final local = UpdateLocalDataSource(box: box);

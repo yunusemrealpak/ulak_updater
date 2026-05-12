@@ -23,7 +23,7 @@ class DownloadProgressDialog extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: theme.dialogBackgroundColor,
+                  color: theme.dialogTheme.backgroundColor ?? theme.colorScheme.surface,
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Column(

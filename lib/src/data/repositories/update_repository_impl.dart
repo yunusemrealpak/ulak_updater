@@ -86,7 +86,7 @@ class UpdateRepositoryImpl implements UpdateRepository {
       if (actual.toLowerCase() != expectedSha256.toLowerCase()) {
         return Left(IntegrityFailure(
           'SHA-256 mismatch (expected ${expectedSha256.substring(0, 8)}…, got ${actual.substring(0, 8)}…)',
-        ));
+        ),);
       }
       return const Right(unit);
     } catch (e) {
@@ -102,7 +102,7 @@ class UpdateRepositoryImpl implements UpdateRepository {
         await installer.requestInstallPermission();
         return const Left(InstallPermissionFailure(
           'REQUEST_INSTALL_PACKAGES permission required',
-        ));
+        ),);
       }
       await installer.installApk(filePath);
       return const Right(unit);

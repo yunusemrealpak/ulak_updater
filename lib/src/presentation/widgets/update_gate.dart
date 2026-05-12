@@ -10,10 +10,30 @@ import 'text_overlay_dialog.dart';
 import 'update_optional_dialog.dart';
 import 'update_required_screen.dart';
 
-/// Wraps the host's home widget. While update flow is active, dialogs are
-/// painted as a Stack overlay; mandatory updates fully replace the child.
+/// Drives the update flow on top of a host app.
+///
+/// `UpdateGate` listens to the singleton `UlakUpdater.instance.cubit` and
+/// paints UI according to the current `UpdateState`:
+///
+/// - For `UpdateMandatory`, the [child] is fully replaced by a fullscreen
+///   blocker until the user updates or exits.
+/// - For `UpdateOptional`, `UpdateDownloading`, `UpdateVerifying`,
+///   `UpdateInstalling`, `UpdateFailed`, and `UpdateCheckOffline`, the
+///   [child] keeps rendering and the relevant dialog or toast is laid on
+///   top via a `Stack`.
+/// - Otherwise the [child] is shown unchanged.
+///
+/// On first build (when `checkOnStartup` is true) the gate kicks off the
+/// version check via `cubit.check()`.
+///
+/// ```dart
+/// MaterialApp(home: UpdateGate(child: HomeScreen()));
+/// ```
 class UpdateGate extends StatefulWidget {
+  /// Creates an [UpdateGate] that wraps [child].
   const UpdateGate({super.key, required this.child});
+
+  /// Your normal home widget.
   final Widget child;
 
   @override

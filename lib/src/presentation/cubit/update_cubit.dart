@@ -39,7 +39,7 @@ class UpdateCubit extends Cubit<UpdateState> {
     unawaited(sendCheckin(
       currentVersionCode: currentVersionCode,
       currentVersionName: currentVersionName,
-    ));
+    ),);
   }
 
   /// Triggered when the user taps "Yükle" on the optional or mandatory dialog.
@@ -48,7 +48,7 @@ class UpdateCubit extends Cubit<UpdateState> {
       info: info,
       receivedBytes: 0,
       totalBytes: info.fileSize,
-    ));
+    ),);
 
     final downloadResult = await downloadApk(
       info: info,
@@ -58,7 +58,7 @@ class UpdateCubit extends Cubit<UpdateState> {
             info: info,
             receivedBytes: received,
             totalBytes: total > 0 ? total : info.fileSize,
-          ));
+          ),);
         }
       },
     );
@@ -66,7 +66,7 @@ class UpdateCubit extends Cubit<UpdateState> {
     final filePath = downloadResult.fold<String?>((failure) {
       emit(UpdateFailed(failure: failure, wasMandatory: wasMandatory, info: info));
       return null;
-    }, (path) => path);
+    }, (path) => path,);
     if (filePath == null) return;
 
     emit(UpdateVerifying(info));
@@ -77,7 +77,7 @@ class UpdateCubit extends Cubit<UpdateState> {
     final verified = verifyResult.fold<bool>((failure) {
       emit(UpdateFailed(failure: failure, wasMandatory: wasMandatory, info: info));
       return false;
-    }, (_) => true);
+    }, (_) => true,);
     if (!verified) return;
 
     emit(UpdateInstalling(info));

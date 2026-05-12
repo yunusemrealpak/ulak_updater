@@ -1,12 +1,43 @@
-/// ulak_updater — self-hosted in-app updater for Android Flutter apps.
+/// Self-hosted, Android-only in-app updater for Flutter.
 ///
-/// Public API:
-///   - [UlakUpdater.init] — call once before runApp().
-///   - [UlakUpdaterConfig] — configures base URL, timeouts, copy.
-///   - [UpdateGate] — wrap your home widget; gates host app behind update flow.
+/// `ulak_updater` lets internal / field-deployed Flutter apps that are not
+/// shipped through Google Play check a self-hosted server for new APK
+/// releases, download them with progress, verify integrity via SHA-256, and
+/// trigger Android's native install dialog with a single tap.
 ///
-/// Internal layers (data/domain/presentation/platform) are exported for
-/// advanced use (custom UI), but most apps only need the three above.
+/// ## Quick start
+///
+/// ```dart
+/// import 'package:flutter/material.dart';
+/// import 'package:ulak_updater/ulak_updater.dart';
+///
+/// Future<void> main() async {
+///   WidgetsFlutterBinding.ensureInitialized();
+///   await UlakUpdater.init(
+///     config: const UlakUpdaterConfig(baseUrl: 'https://updates.example.com'),
+///   );
+///   runApp(const MyApp());
+/// }
+///
+/// class MyApp extends StatelessWidget {
+///   const MyApp({super.key});
+///   @override
+///   Widget build(BuildContext context) {
+///     return const MaterialApp(home: UpdateGate(child: HomeScreen()));
+///   }
+/// }
+/// ```
+///
+/// ## Public API
+///
+/// The three types most apps need:
+///
+/// - [UlakUpdater] — singleton; call [UlakUpdater.init] once before `runApp`.
+/// - [UlakUpdaterConfig] — base URL, channel, timeouts, copy.
+/// - [UpdateGate] — wraps your home widget and drives the update flow.
+///
+/// Domain types ([ReleaseInfo], [UpdateState], [UpdateFailure]) are exported
+/// so advanced apps can build a custom UI on top of `UlakUpdater.instance.cubit`.
 library;
 
 export 'src/presentation/ulak_updater.dart';
